@@ -4,6 +4,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,6 +18,8 @@ const formSchema = z.object({
 });
 
 export default function ZoneCreate() {
+    const [isSending, setIsSending] = useState(false);
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -22,12 +27,23 @@ export default function ZoneCreate() {
         },
     });
 
+    const submit = () => {
+        setIsSending(true);
+        router.post(route('zones.store'), form.getValues(), {
+            onSuccess: () => {
+                form.reset();
+                setIsSending(false);
+            },
+            onError: () => setIsSending(false),
+        });
+    };
+
     return (
         <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
             <HeadingSmall title="Создание зоны" description="Введите номер новой зоны в поле ниже" />
             <div className="mt-4">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+                    <form onSubmit={form.handleSubmit(submit)}>
                         <FormField
                             control={form.control}
                             name="zone"
@@ -47,7 +63,10 @@ export default function ZoneCreate() {
                             )}
                         />
                         <div className="mt-4 space-x-2">
-                            <Button type="submit">Создать</Button>
+                            <Button type="submit" disabled={isSending || !form.formState.isDirty}>
+                                {isSending && <Loader2 className="animate-spin" />}
+                                Создать
+                            </Button>
                             <Button variant="outline" onClick={() => form.reset()}>
                                 Очистить
                             </Button>

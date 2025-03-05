@@ -14,6 +14,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/zones', [ZoneController::class, 'index'])->name('zones.index');
+    Route::post('/zones', [ZoneController::class, 'store'])->name('zones.store');
+    Route::delete('/zones/{zone}', [ZoneController::class, 'destroy'])->name('zones.destroy');
 });
 
 require __DIR__.'/settings.php';

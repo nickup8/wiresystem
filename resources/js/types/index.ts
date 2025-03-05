@@ -14,11 +14,17 @@ export interface NavGroup {
     items: NavItem[];
 }
 
+export interface NavSubItem {
+    title: string;
+    url: string;
+}
+
 export interface NavItem {
     title: string;
     url: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    items?: NavSubItem[];
 }
 
 export interface SharedData {

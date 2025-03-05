@@ -27,7 +27,11 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                                         <TableHead
                                             key={header.id}
                                             className={`border-r ${borderColor} ast:px-4 text-center font-bold text-gray-900 last:border-r-0 last:whitespace-nowrap`}
-                                            style={{ width: header.index === columns.length - 1 ? 'auto' : 'inherit' }}
+                                            style={{
+                                                width: header.column.getSize(),
+                                                minWidth: header.column.columnDef.minSize,
+                                                maxWidth: header.column.columnDef.maxSize,
+                                            }}
                                         >
                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </TableHead>
@@ -44,7 +48,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                                         <TableCell
                                             key={cell.id}
                                             className={`border-r ${borderColor} text-center last:border-r-0 last:px-4 last:whitespace-nowrap`}
-                                            style={{ width: cell.column.getIndex() === columns.length - 1 ? 'auto' : 'inherit' }}
+                                            style={{ width: cell.column.getSize() }}
                                         >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
