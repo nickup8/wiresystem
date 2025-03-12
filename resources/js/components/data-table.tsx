@@ -58,7 +58,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                    Нет данных
                                 </TableCell>
                             </TableRow>
                         )}

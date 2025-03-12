@@ -44,3 +44,56 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Zone {
+    id: number;
+    zone: string;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface StoragesList {
+    id: number;
+    rack: string;
+    zone: Zone;
+    start_level: number;
+    level_count: number;
+    start_storage: number;
+    finish_storage: number;
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface PaginationMeta {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: PaginationLink[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+}
+
+export interface PaginationLinks {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+}
+
+export interface PaginationProps<T> {
+    data: T[];
+    links: PaginationLinks;
+    meta: PaginationMeta;
+}
+
+export interface Machine {
+    id: number;
+    name: string;
+    zone: Zone;
+}
