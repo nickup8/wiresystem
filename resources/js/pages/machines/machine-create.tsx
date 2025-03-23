@@ -37,7 +37,10 @@ export default function MachineCreate({ zones }: { zones: Zone[] }) {
 
         router.post(route('machines.store'), data, {
             onSuccess: () => {
-                form.reset();
+                form.reset({
+                    name: '',
+                    zone_id: null,
+                });
                 setIsSending(false);
             },
             onError: () => setIsSending(false),

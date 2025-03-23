@@ -33,7 +33,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        $userAdmin = $user->getRoleNames()->intersect(['logistic', 'technical'])->isNotEmpty();
+        $userFeeding = $user->getRoleNames()->contains('feeding');
+        $userMachine = $user->getRoleNames()->contains('machine');
+
+
+        if( $userAdmin) {
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+        elseif ($userFeeding) {
+            return redirect()->route('feedingModule.index');
+        }
+        elseif ($userMachine) {
+            return redirect()->route('machineModule.index');
+        }
     }
 
     /**

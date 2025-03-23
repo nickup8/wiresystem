@@ -14,7 +14,6 @@ import MachineSettings from './machine-settings';
 
 export default function MachineStorages({ machine, error, success, storages }: { machine: Machine; error: string; success: string; storages: any }) {
     const [isSending, setIsSending] = useState(false);
-    console.log(storages);
 
     const formSchema = z.object({
         storage_name: z.string({ message: 'Поле обязательно для заполнения' }).min(1, { message: 'Поле не может быть пустым' }),
@@ -87,7 +86,7 @@ export default function MachineStorages({ machine, error, success, storages }: {
             <div className="mt-8">
                 <div className="space-y-6">
                     <HeadingSmall title="Привязанные места хранения" description="Ниже представлены привязанные места хранения" />
-                    <DataTable columns={columns} data={storages.data} />
+                    <DataTable columns={columns} data={storages} />
                 </div>
             </div>
         </MachineSettings>

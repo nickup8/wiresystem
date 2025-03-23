@@ -33,6 +33,7 @@ export default function ZoneCreate() {
             onSuccess: () => {
                 form.reset();
                 setIsSending(false);
+                router.reload({ only: ['zones'] });
             },
             onError: () => setIsSending(false),
         });

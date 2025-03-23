@@ -1,17 +1,23 @@
 <?php
 
+use App\Enum\RolesEnum;
+use App\Http\Controllers\FeedingController;
+use App\Http\Controllers\FeedingModuleController;
 use App\Http\Controllers\MachineController;
+use App\Http\Controllers\MachineModuleController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\ZoneController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
+
+Route::middleware(['auth', sprintf('role:%s|%s',
+            RolesEnum::LOGISTIC->value,
+            RolesEnum::TECHNICAL->value,
+        )])->group(function () {
+
+    Route::get('/', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
@@ -28,6 +34,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/machines/{machine}', [MachineController::class, 'update'])->name('machines.update');
     Route::get('/machines/{machine}/edit/storages', [MachineController::class, 'storages'])->name('machines.storages');
     Route::post('/machines/{machine}/storages', [MachineController::class, 'storagesStore'])->name('machines.storages.store');
+
+    Route::get('/feeding', [FeedingController::class, 'index'])->name('feeding.index');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/feeding-module', [FeedingModuleController::class, 'index'])->name('feedingModule.index');
+    Route::get('/machine-module', [MachineModuleController::class, 'index'])->name('machineModule.index');
+    Route::get('/machine-module/{machine}', [MachineModuleController::class, 'show'])->name('machines.show');
 });
 
 require __DIR__.'/settings.php';

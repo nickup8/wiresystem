@@ -76,6 +76,7 @@ export default function Zones({ zones, error, success }: { zones: Zone[]; error:
         router.delete(route('zones.destroy', id), {
             onSuccess: () => {
                 setIsSending(false);
+                router.reload({ only: ['zones'] });
             },
             onError: () => {
                 setIsSending(false);
