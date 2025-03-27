@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Archive, BookOpen, ChartNoAxesCombined, ChartPie, Cpu, Folder, LayoutGrid } from 'lucide-react';
+import { Archive, BookOpen, Cable, ChartNoAxesCombined, ChartPie, Cpu, Diameter, Folder, LayoutGrid, PaintBucket } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,6 +31,21 @@ const mainNavItems: NavItem[] = [
         title: 'Оборудование',
         url: '/machines',
         icon: Cpu,
+    },
+    {
+        title: 'Типы проводов',
+        url: '/wire-types',
+        icon: Cable,
+    },
+    {
+        title: 'Цвета провода',
+        url: '/wire-colors',
+        icon: PaintBucket,
+    },
+    {
+        title: 'Сечения провода',
+        url: '/wire-sizes',
+        icon: Diameter,
     },
 ];
 

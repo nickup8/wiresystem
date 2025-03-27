@@ -6,6 +6,10 @@ use App\Http\Controllers\FeedingModuleController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\MachineModuleController;
 use App\Http\Controllers\StorageController;
+use App\Http\Controllers\WireColorController;
+use App\Http\Controllers\WireController;
+use App\Http\Controllers\WireSizeController;
+use App\Http\Controllers\WireTypeController;
 use App\Http\Controllers\ZoneController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,10 +40,20 @@ Route::middleware(['auth', sprintf('role:%s|%s',
     Route::post('/machines/{machine}/storages', [MachineController::class, 'storagesStore'])->name('machines.storages.store');
 
     Route::get('/feeding', [FeedingController::class, 'index'])->name('feeding.index');
+    Route::get('/wire-types', [WireTypeController::class, 'index'])->name('wireTypes.index');
+    Route::post('/wire-types', [WireTypeController::class, 'store'])->name('wireTypes.store');
+
+    Route::get('/wire-colors', [WireColorController::class, 'index'])->name('wireColors.index');
+    Route::post('/wire-colors', [WireColorController::class, 'store'])->name('wireColors.store');
+
+
+    Route::get('/wire-sizes', [WireSizeController::class, 'index'])->name('wireSizes.index');
+    Route::post('/wire-sizes', [WireSizeController::class, 'store'])->name('wireSizes.store');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/feeding-module', [FeedingModuleController::class, 'index'])->name('feedingModule.index');
+    Route::post('/wire/new', [WireController::class, 'store'])->name('wire.store');
     Route::get('/machine-module', [MachineModuleController::class, 'index'])->name('machineModule.index');
     Route::get('/machine-module/{machine}', [MachineModuleController::class, 'show'])->name('machines.show');
 });

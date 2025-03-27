@@ -2,17 +2,23 @@ import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 
 export default function FeedingNewWire() {
     const form = useForm();
+
+    const { control, handleSubmit, getValues } = form;
+    const submit = () => {
+        router.post(route('wire.store'), getValues());
+    };
     return (
         <div>
             <HeadingSmall title="Новый провод" />
             <Form {...form}>
-                <form className="mt-4 flex flex-col gap-4">
+                <form className="mt-4 flex flex-col gap-4" noValidate onSubmit={handleSubmit(submit)}>
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="barcode"
                         render={({ field }) => (
                             <FormItem>
@@ -25,7 +31,7 @@ export default function FeedingNewWire() {
                         )}
                     />
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="storage_name"
                         render={({ field }) => (
                             <FormItem>
