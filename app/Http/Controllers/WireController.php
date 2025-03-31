@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 class WireController extends Controller
 {
+    protected$wireServices;
     public function __construct(WireServices $wireServices){
         $this->wireServices = $wireServices;
     }
@@ -58,6 +59,10 @@ class WireController extends Controller
         $storage = $request['storage_name'];
 
         $storageId = Storage::where('name', $storage)->first();
+
+        if (!$storageId) {
+            throw new \InvalidArgumentException("Ячейка не найдена: " . $storage);
+        }
 
 
         StorageWire::create([
