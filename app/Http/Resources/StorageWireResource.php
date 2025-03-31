@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class WireResource extends JsonResource
+class StorageWireResource extends JsonResource
 {
     public static $wrap = false;
     /**
@@ -17,11 +17,9 @@ class WireResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'material' => $this->material,
-            'barcode' => $this->barcode,
-            'details' => new WireDetailResource($this->wireDetails),
+            'storage' => new StorageResourse($this->storage),
+            'wire' => new WireResource($this->wire),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
         ];
     }
 }

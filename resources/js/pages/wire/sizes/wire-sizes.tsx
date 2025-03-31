@@ -1,10 +1,11 @@
 import Heading from '@/components/heading';
-import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
+import { WireSize } from '@/types';
 import { Head } from '@inertiajs/react';
 import WireSizeCreate from './wire-size-create';
+import WireSizeTable from './wire-size-table';
 
-export default function WireSizes() {
+export default function WireSizes({ wireSizes }: { wireSizes: WireSize[] }) {
     return (
         <AppLayout>
             <Head title="Сечения проводов" />
@@ -18,10 +19,7 @@ export default function WireSizes() {
                     </div>
                     <div className="flex-1">
                         <div>
-                            Здесь будет вывод сечений
-                            <div className="mt-4 text-red-500">
-                                <HeadingSmall title="Доделать вывод сечений проводов из базы данных" />
-                            </div>
+                            <WireSizeTable wireSizes={wireSizes} />
                         </div>
                     </div>
                 </div>

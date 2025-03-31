@@ -1,10 +1,11 @@
 import Heading from '@/components/heading';
-import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
+import { WireColor } from '@/types';
 import { Head } from '@inertiajs/react';
 import WireColorCreate from './wire-color-create';
+import WireColorTable from './wire-color-table';
 
-export default function WireColor() {
+export default function WireColors({ wireColors }: { wireColors: WireColor[] }) {
     return (
         <AppLayout>
             <Head title="Цвета проводов" />
@@ -18,10 +19,7 @@ export default function WireColor() {
                     </div>
                     <div className="flex-1">
                         <div>
-                            Здесь будет вывод цвета
-                            <div className="mt-4 text-red-500">
-                                <HeadingSmall title="Доделать вывод цвета проводов из базы данных" />
-                            </div>
+                            <WireColorTable wireColors={wireColors} />
                         </div>
                     </div>
                 </div>

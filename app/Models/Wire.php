@@ -12,8 +12,8 @@ class Wire extends Model
         'wire_detail_id'
     ];
 
-    public function wireDetail()
+    public function wireDetails()
     {
-        return $this->hasManyThrough(WireDetail::class, Wire::class, 'wire_id', 'id', 'id', 'material_detail_id');
+        return $this->belongsTo(WireDetail::class, 'wire_detail_id');
     }
 }

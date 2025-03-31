@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\WireResource;
+use App\Models\Storage;
+use App\Models\StorageWire;
 use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireDetail;
@@ -29,7 +31,7 @@ class WireController extends Controller
         $color = WireColor::where('barcode', $material['color'])->first();
 
         if (!$type || !$size || !$color) {
-            throw new \InvalidArgumentException("Неверный штрих-код: $request");
+            throw new \InvalidArgumentException("Неверный штрих-код: " . $request['barcode']);
         }
 
         $wireDetail = WireDetail::where('wire_type_id', $type->id)
@@ -51,6 +53,18 @@ class WireController extends Controller
             'barcode' => $array['barcode']
         ]);
 
-        dd( new WireResource($wire));
+
+
+        $storage = $request['storage_name'];
+
+        $storageId = Storage::where('name', $storage)->first();
+
+
+        StorageWire::create([
+            'storage_id' => $storageId->id,
+            'wire_id' => $wire->id
+        ]);
+
+        return to_route('feedingModule.index')->with('success', 'Провод успешно перемещен в ячейку ' . $storage);
     }
 }

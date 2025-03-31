@@ -1,6 +1,7 @@
 import DataTable from '@/components/data-table';
+import { WireType } from '@/types';
 
-export default function WireTypesTable() {
+export default function WireTypesTable({ wireTypes }: { wireTypes: WireType[] }) {
     const columns = [
         {
             accessorKey: 'barcode',
@@ -11,5 +12,5 @@ export default function WireTypesTable() {
             header: 'Название типа провода',
         },
     ];
-    return <DataTable columns={columns} data={[]} />;
+    return <DataTable columns={columns} data={wireTypes} />;
 }

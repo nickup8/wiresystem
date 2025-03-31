@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WireTypeRequest;
+use App\Http\Resources\WireTypeResource;
 use App\Models\WireType;
 use DB;
 use Illuminate\Http\Request;
@@ -11,7 +12,10 @@ class WireTypeController extends Controller
 {
     public function index()
     {
-        return inertia('wire/types/wire-types');
+        $wireTypes = WireTypeResource::collection(WireType::all());
+        return inertia('wire/types/wire-types', [
+            'wireTypes' => $wireTypes
+        ]);
     }
 
     public function store(WireTypeRequest $request)

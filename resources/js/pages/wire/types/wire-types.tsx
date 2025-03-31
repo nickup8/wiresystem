@@ -1,11 +1,13 @@
 import Heading from '@/components/heading';
-import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
+import { WireType } from '@/types';
 import { Head } from '@inertiajs/react';
 import WireTypeCreate from './wire-type-create';
 import WireTypesTable from './wire-types-table';
 
-export default function WireTypes() {
+export default function WireTypes({ wireTypes }: { wireTypes: WireType[] }) {
+    console.log(wireTypes);
+
     return (
         <AppLayout>
             <Head title="Типы проводов" />
@@ -19,10 +21,7 @@ export default function WireTypes() {
                     </div>
                     <div className="flex-1">
                         <div>
-                            <WireTypesTable />
-                            <div className="mt-4 text-red-500">
-                                <HeadingSmall title="Доделать вывод типов проводов из базы данных" />
-                            </div>
+                            <WireTypesTable wireTypes={wireTypes} />
                         </div>
                     </div>
                 </div>

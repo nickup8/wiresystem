@@ -1,31 +1,30 @@
 import DataTable from '@/components/data-table';
 
-export default function FeedingTable() {
+export default function FeedingTable({ wires }: any) {
     const columns = [
         {
-            accessorKey: 'zone',
+            accessorKey: 'storage.zone.zone',
             header: 'Зона',
         },
         {
-            accessorKey: 'zone.zone',
+            accessorKey: 'storage.name',
             header: 'Место хранение',
         },
         {
-            accessorKey: 'material',
+            accessorKey: 'wire.material',
             header: 'YPN',
         },
         {
-            accessorKey: 'barcode',
+            accessorKey: 'wire.barcode',
             header: 'Штриход',
         },
         {
-            accessorKey: 'description',
             header: 'Описание',
-        },
-        {
-            accessprKey: 'created_at',
-            header: 'Создан',
+            cell: ({ row }: { row: any }) => {
+                const details = row.original.wire.details;
+                return `${details.type.name} ${details.size.name} ${details.color.name}`;
+            },
         },
     ];
-    return <DataTable columns={columns} data={[]} />;
+    return <DataTable columns={columns} data={wires.data} />;
 }

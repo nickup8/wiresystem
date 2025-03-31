@@ -98,3 +98,16 @@ export interface Machine {
     zone: Zone;
     storages: Storage[];
 }
+
+export interface WireType {
+    name: string;
+    barcode: string;
+}
+export interface WireSize {
+    name: string;
+    barcode: string;
+}
+export interface WireColor {
+    name: string;
+    barcode: string;
+}
