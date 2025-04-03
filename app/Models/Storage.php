@@ -23,4 +23,8 @@ class Storage extends Model
     {
         return $this->belongsToMany(Machine::class, 'machine_storages');
     }
+    public function storageWires()
+    {
+        return $this->hasMany(StorageWire::class);
+    }
 }

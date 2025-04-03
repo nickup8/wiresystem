@@ -6,15 +6,20 @@ import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 
 export default function FeedingNewWire() {
-    const form = useForm();
+    const form = useForm({
+        defaultValues: {
+            barcode: '',
+            storage_name: '',
+        },
+    });
 
     const { control, handleSubmit, getValues } = form;
     const submit = () => {
-        router.post(route('wire.store'), getValues());
+        router.post(route('wire.moving'), getValues());
     };
     return (
         <div>
-            <HeadingSmall title="Новый провод" />
+            <HeadingSmall title="Перемещение провода" />
             <Form {...form}>
                 <form className="mt-4 flex flex-col gap-4" noValidate onSubmit={handleSubmit(submit)}>
                     <FormField
@@ -43,7 +48,7 @@ export default function FeedingNewWire() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Добавить</Button>
+                    <Button type="submit">Переместить</Button>
                 </form>
             </Form>
         </div>

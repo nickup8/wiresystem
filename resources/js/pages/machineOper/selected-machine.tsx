@@ -1,20 +1,47 @@
 import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { Machine, SharedData } from '@/types';
+import { Machine, SharedData, Storage, WireStorage } from '@/types';
+
+import { Button } from '@/components/ui/button';
 import { Head, usePage } from '@inertiajs/react';
-import { useForm } from 'react-hook-form';
+import { useMemo, useState } from 'react';
+import FormMachineWire from './form-machine-wire';
 import TableMachine from './table-machine';
+import WiresStorageMachine from './wires-storage-machine';
 
-export default function SelectedMachine({ machine }: { machine: Machine }) {
-    console.log(machine);
-
-    const levelAMachineStorages = machine.storages.filter((storage) => storage.name.endsWith('A'));
-    const levelBMachineStorages = machine.storages.filter((storage) => storage.name.endsWith('B'));
+export default function SelectedMachine({ machine, wires }: { machine: Machine; wires: WireStorage[] }) {
     const user = usePage<SharedData>().props.auth.user;
-    const form = useForm();
+
+    const [storages, setStorages] = useState<Storage[]>([]);
+    const [showModal, setShowModal] = useState(false);
+    const [wire, setWire] = useState<string | null>(null);
+
+    // Группируем провода по складам
+    const wireStoragesMap = useMemo(() => {
+        return wires.reduce((acc: Record<string, Storage[]>, wire) => {
+            if (!acc[wire.wire.material]) acc[wire.wire.material] = [];
+            acc[wire.wire.material].push(wire.storage);
+            return acc;
+        }, {});
+    }, [wires]);
+
+    const orderWire = (material: string | null) => {
+        if (material === null) return;
+        setShowModal(false);
+        console.log('orderedWire:', material);
+    };
+    const submit = (data: { material: string }) => {
+        const foundStorages = wireStoragesMap[data.material] || [];
+        if (foundStorages.length > 0) {
+            setStorages(foundStorages);
+            setShowModal(true);
+            setWire(data.material);
+        } else {
+            orderWire(data.material);
+        }
+    };
+
     return (
         <AppHeaderLayout>
             <Head title={machine.name} />
@@ -23,66 +50,36 @@ export default function SelectedMachine({ machine }: { machine: Machine }) {
                     <Heading title={`Машина: ${machine.name}`} />
                 </div>
                 <div className="mt-6">
-                    <Form {...form}>
-                        <form className="flex w-full items-end justify-center gap-4">
-                            <FormField
-                                control={form.control}
-                                name="material"
-                                render={({ field }) => (
-                                    <FormItem className="max-w-80 flex-1">
-                                        <FormLabel>Заказать провод</FormLabel>
-                                        <FormControl>
-                                            <Input type="text" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <div className="flex gap-3">
-                                <Button variant="default">Заказать</Button>
-                                <Button variant="outline">Отменить</Button>
-                            </div>
-                        </form>
-                    </Form>
+                    <FormMachineWire submit={submit} />
                 </div>
                 <div className="mt-24 flex gap-6">
                     <div className="flex-1">
-                        <Heading className="ml-8" title={'Провода в рабочих ячейках машины ' + machine.name} />
-
-                        {levelBMachineStorages.length > 0 && (
-                            <div className="mt-4 flex">
-                                <div className="flex w-8 items-center text-2xl font-bold">B</div>
-                                {levelBMachineStorages.map((storage) => (
-                                    <div key={storage.id} className="-ml-[1px] flex flex-col items-center border py-2">
-                                        <div className="mb-2 w-32 border-b px-4 pb-2 text-center">{storage.name}</div>
-                                        <div>123</div>
-                                        <div>123</div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {levelAMachineStorages.length > 0 && (
-                            <div className="mt-4 flex">
-                                <div className="flex w-8 items-center text-2xl font-bold">A</div>
-                                {levelAMachineStorages.map((storage) => (
-                                    <div key={storage.id} className="-ml-[1px] flex flex-col items-center border py-2">
-                                        <div className="mb-2 w-32 border-b px-4 pb-2 text-center">{storage.name}</div>
-                                        <div>123</div>
-                                        <div>123</div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        <div className="mt-3 ml-8">
-                            <span className="font-bold text-red-500">Внимание!!!</span> Запрещено использовать провода не из своих рабочих ячеек
-                        </div>
+                        <WiresStorageMachine machine={machine} wires={wires} />
                     </div>
                     <div className="min-w-[350px]">
                         <TableMachine />
                     </div>
                 </div>
             </div>
+            <Dialog open={showModal} onOpenChange={setShowModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Вам нужна дополнительная катушка?</DialogTitle>
+                        <DialogDescription>
+                            Провод <span className="font-bold text-red-500">{wire}</span> есть в рабочих ячейках:{' '}
+                            <span className="font-bold whitespace-nowrap text-red-500">{storages.map((s) => s.name).join(', ')}</span>.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter>
+                        <Button onClick={() => orderWire(wire)}>Да</Button>
+
+                        <Button onClick={() => setShowModal(false)} variant="outline">
+                            Нет
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </AppHeaderLayout>
     );
 }

@@ -62,6 +62,13 @@ export interface StoragesList {
     finish_storage: number;
 }
 
+export interface Storage {
+    id: number;
+    name: string;
+    zone: Zone;
+    created_at: Date;
+}
+
 export interface PaginationLink {
     url: string | null;
     label: string;
@@ -110,4 +117,24 @@ export interface WireSize {
 export interface WireColor {
     name: string;
     barcode: string;
+}
+
+export interface WireDetail {
+    id: number;
+    type: WireType;
+    size: WireSize;
+    color: WireColor;
+}
+export interface Wire {
+    id: number;
+    barcode: string;
+    material: string;
+    created_at: Date;
+    details: WireDetail;
+}
+export interface WireStorage {
+    id: number;
+    created_at: Date;
+    storage: Storage;
+    wire: Wire;
 }

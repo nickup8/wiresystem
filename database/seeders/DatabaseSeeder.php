@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use App\Enum\RolesEnum;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\WireColor;
+use App\Models\WireSize;
+use App\Models\WireType;
+use App\Models\Zone;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -56,5 +60,50 @@ class DatabaseSeeder extends Seeder
             'login' => '4321',
             'password' => Hash::make('password'),
         ])->assignRole(['machine']);
+
+        Zone::create([
+            'zone' => 'Зона 1',
+        ]);
+        Zone::create([
+            'zone' => 'Зона 2',
+        ]);
+        Zone::create([
+            'zone' => 'Зона 3',
+        ]);
+
+        WireType::create([
+            'name' => 'ПВАМ',
+            'barcode' => 'BR2',
+        ]);
+        WireType::create([
+            'name' => 'T3',
+            'barcode' => 'G03',
+        ]);
+        WireColor::create([
+            'name' => 'Ч',
+            'barcode' => '30',
+        ]);
+        WireColor::create([
+            'name' => 'Б',
+            'barcode' => '40',
+        ]);
+        WireColor::create([
+            'name' => 'ГБ',
+            'barcode' => '94',
+        ]);
+
+        WireSize::create([
+            'name' => '0,5',
+            'barcode' => '039',
+        ]);
+        WireSize::create([
+            'name' => '0,35',
+            'barcode' => '069',
+        ]);
+        WireSize::create([
+            'name' => '0,75',
+            'barcode' => '040',
+        ]);
+
     }
 }

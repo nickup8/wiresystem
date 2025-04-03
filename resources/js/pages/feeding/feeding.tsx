@@ -1,11 +1,10 @@
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, PaginationProps, WireStorage } from '@/types';
 import { Head } from '@inertiajs/react';
 import FeedingTable from './feeding-table';
 
-export default function Feeding({ wires }: any) {
-    console.log(wires);
+export default function Feeding({ wires }: { wires: PaginationProps<WireStorage> }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Фидинг',

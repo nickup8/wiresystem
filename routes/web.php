@@ -54,6 +54,7 @@ Route::middleware(['auth', sprintf('role:%s|%s',
 Route::middleware(['auth'])->group(function () {
     Route::get('/feeding-module', [FeedingModuleController::class, 'index'])->name('feedingModule.index');
     Route::post('/wire/new', [WireController::class, 'store'])->name('wire.store');
+    Route::post('wire/moving', [WireController::class, 'movingWire'])->name('wire.moving');
     Route::get('/machine-module', [MachineModuleController::class, 'index'])->name('machineModule.index');
     Route::get('/machine-module/{machine}', [MachineModuleController::class, 'show'])->name('machines.show');
 });

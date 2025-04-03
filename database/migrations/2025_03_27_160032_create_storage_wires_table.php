@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('storage_wires', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('storage_id');
-            $table->unsignedBigInteger('wire_id');
+            $table->unsignedBigInteger('storage_id')->unique();
+            $table->unsignedBigInteger('wire_id')->unique();
             $table->timestamps();
 
             $table->foreign('storage_id')->references('id')->on('storages')->onDelete('cascade');

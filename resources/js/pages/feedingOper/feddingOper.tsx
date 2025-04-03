@@ -1,10 +1,11 @@
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
+import { Zone } from '@/types';
 import { Head } from '@inertiajs/react';
 import FeedingNewWire from './feeding-new-wire';
 import FeedingTable from './feeding-table';
 import FeedingZones from './feeding-zones';
 
-export default function FeedingOper() {
+export default function FeedingOper({ zones }: { zones: Zone[] }) {
     return (
         <AppHeaderLayout>
             <Head title="Фидинг" />
@@ -14,7 +15,7 @@ export default function FeedingOper() {
                 </div>
                 <div className="w-80">
                     <div className="flex flex-col gap-8">
-                        <FeedingZones />
+                        <FeedingZones zones={zones} />
                         <FeedingNewWire />
                     </div>
                 </div>

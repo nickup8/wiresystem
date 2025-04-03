@@ -1,6 +1,7 @@
 import DataTable from '@/components/data-table';
+import { PaginationProps, WireStorage } from '@/types';
 
-export default function FeedingTable({ wires }: any) {
+export default function FeedingTable({ wires }: { wires: PaginationProps<WireStorage> }) {
     const columns = [
         {
             accessorKey: 'storage.zone.zone',

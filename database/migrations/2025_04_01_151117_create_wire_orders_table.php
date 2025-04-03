@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wires', function (Blueprint $table) {
+        Schema::create('wire_orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('wire_detail_id');
-            $table->string('material');
-            $table->string('barcode')->unique();
+            $table->foreignId('wire_id')->constrained()->onDelete('cascade');
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
-            $table->foreign('wire_detail_id')->references('id')->on('wire_details')->onDelete('cascade');
+            $table->unique(['wire_id', 'order_id']);
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wires');
+        Schema::dropIfExists('wire_orders');
     }
 };
