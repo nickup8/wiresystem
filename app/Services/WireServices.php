@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Models\Wire;
+use App\Models\WireColor;
+use App\Models\WireDetail;
+use App\Models\WireSize;
+use App\Models\WireType;
 
 class WireServices
 {
@@ -75,6 +79,33 @@ class WireServices
             'color' => $color,
             'size' => $size
         ];
+
+    }
+
+    public function getIdByDetais($material)
+    {
+        $type = WireType::where('barcode', $material['type'])->first();
+        $size = WireSize::where('barcode', $material['size'])->first();
+        $color = WireColor::where('barcode', $material['color'])->first();
+
+        if (!$type || !$size || !$color) {
+            throw new \InvalidArgumentException("Неверный штрих-код: " . $material['type'] . $material['size'] . $material['color']);
+        }
+
+        $wireDetail = WireDetail::where('wire_type_id', $type->id)
+            ->where('wire_size_id', $size->id)
+            ->where('wire_color_id', $color->id)
+            ->first();
+
+        if (!$wireDetail) {
+            $wireDetail = WireDetail::create([
+                'wire_type_id' => $type->id,
+                'wire_size_id' => $size->id,
+                'wire_color_id' => $color->id
+            ]);
+        }
+
+        return $wireDetail->id;
 
     }
 }

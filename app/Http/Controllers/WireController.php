@@ -29,50 +29,16 @@ class WireController extends Controller
         $array = $this->wireServices->transformRequestNametoArray($data['barcode']);
         $material = $this->wireServices->splitMaterialByTypeColorSize($array['YPN']);
 
-        $type = WireType::where('barcode', $material['type'])->first();
-        $size = WireSize::where('barcode', $material['size'])->first();
-        $color = WireColor::where('barcode', $material['color'])->first();
 
-        if (!$type || !$size || !$color) {
-            throw new \InvalidArgumentException("Неверный штрих-код: " . $request['barcode']);
-        }
-
-        $wireDetail = WireDetail::where('wire_type_id', $type->id)
-            ->where('wire_size_id', $size->id)
-            ->where('wire_color_id', $color->id)
-            ->first();
-
-        if (!$wireDetail) {
-            $wireDetail = WireDetail::create([
-                'wire_type_id' => $type->id,
-                'wire_size_id' => $size->id,
-                'wire_color_id' => $color->id
-            ]);
-        }
+        $wireDetailsId = $this->wireServices->getIdByDetais($material);
 
         $wire = Wire::create([
-            'wire_detail_id' => $wireDetail->id,
+            'wire_detail_id' => $wireDetailsId,
             'material' => $array['YPN'],
             'barcode' => $array['barcode']
         ]);
 
-
-
-        $storage = $data['storage_name'];
-
-        $storageId = Storage::where('name', $storage)->first();
-
-        if (!$storageId) {
-            throw new \InvalidArgumentException("Ячейка не найдена: " . $storage);
-        }
-
-
-        StorageWire::create([
-            'storage_id' => $storageId->id,
-            'wire_id' => $wire->id
-        ]);
-
-        return to_route('feedingModule.index')->with('success', 'Провод успешно перемещен в ячейку ' . $storage);
+        return $wire;
     }
 
     public function movingWire(WireStorageRequest $request)
@@ -80,28 +46,22 @@ class WireController extends Controller
         $data = $request->validated();
         $array = $this->wireServices->transformRequestNametoArray($data['barcode']);
         $wire = Wire::where('barcode', $array['barcode'])->first();
-
+        $storage = Storage::where('name', $data['storage_name'])->first();
         if (!$wire) {
-            $this->store($request);
-        } else {
-            $wire = StorageWire::where('wire_id', $wire->id)->first();
+            $wire = $this->store($request);
 
-            $storageWire = StorageWire::where('storage_id', Storage::where('name', $data['storage_name'])->first()->id)->first();
-            $storage = Storage::where('name', $data['storage_name'])->first();
-            if(!$storage) {
-                throw new \InvalidArgumentException("Ячейка не найдена: " . $data['storage_name']);
-            }
-            // if (!$storageWire) {
-            //     throw new \InvalidArgumentException("Ячейка не найдена: " . $data['storage_name']);
-            // }
-
-            if ($storageWire->wire_id !== $wire->wire_id) {
-                throw new \InvalidArgumentException("Ячейка занята");
-            }
-
-            $wire->update([
-                'storage_id' => Storage::where('name', $data['storage_name'])->first()->id,
+            StorageWire::create([
+                'storage_id' => $storage->id,
                 'wire_id' => $wire->id
+            ]);
+        } else {
+            $storageWire = StorageWire::where('wire_id', $wire->id)->first();
+            if (!$storageWire) {
+                throw new \InvalidArgumentException("Катушка " . $data['barcode'] . " уже пуста");
+            }
+            $storageWire->update([
+                'storage_id' => $storage->id,
+                'wire_id' => $wire->id,
             ]);
         }
         return to_route('feedingModule.index')->with('success', 'Провод успешно перемещен в ячейку ' . $data['storage_name']);
