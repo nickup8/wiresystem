@@ -1,6 +1,7 @@
 <?php
 
 use App\Enum\RolesEnum;
+use App\Events\WireOnMachine;
 use App\Http\Controllers\FeedingController;
 use App\Http\Controllers\FeedingModuleController;
 use App\Http\Controllers\MachineController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\WireController;
 use App\Http\Controllers\WireSizeController;
 use App\Http\Controllers\WireTypeController;
 use App\Http\Controllers\ZoneController;
+use App\Models\Machine;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -58,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/machine-module', [MachineModuleController::class, 'index'])->name('machineModule.index');
     Route::get('/machine-module/{machine}', [MachineModuleController::class, 'show'])->name('machines.show');
 });
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

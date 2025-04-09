@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\WireMachineEvent;
+use App\Events\WireOnMachine;
+use App\Events\WireWithMachine;
 use App\Http\Requests\WireStorageRequest;
 use App\Http\Resources\WireResource;
+use App\Models\Machine;
 use App\Models\Storage;
 use App\Models\StorageWire;
 use App\Models\Wire;
@@ -42,28 +46,26 @@ class WireController extends Controller
     }
 
     public function movingWire(WireStorageRequest $request)
-    {
-        $data = $request->validated();
-        $array = $this->wireServices->transformRequestNametoArray($data['barcode']);
-        $wire = Wire::where('barcode', $array['barcode'])->first();
-        $storage = Storage::where('name', $data['storage_name'])->first();
-        if (!$wire) {
-            $wire = $this->store($request);
+{
+    $data = $request->validated();
+    $storage = Storage::where('name', $data['storage_name'])->firstOrFail();
 
-            StorageWire::create([
-                'storage_id' => $storage->id,
-                'wire_id' => $wire->id
-            ]);
-        } else {
-            $storageWire = StorageWire::where('wire_id', $wire->id)->first();
-            if (!$storageWire) {
-                throw new \InvalidArgumentException("Катушка " . $data['barcode'] . " уже пуста");
-            }
-            $storageWire->update([
-                'storage_id' => $storage->id,
-                'wire_id' => $wire->id,
-            ]);
-        }
-        return to_route('feedingModule.index')->with('success', 'Провод успешно перемещен в ячейку ' . $data['storage_name']);
+    ['wire' => $wire, 'machinePrev' => $machinePrev] = $this->wireServices
+        ->getOrCreateWireAndAttachToStorage($data, $storage, function () use ($request) {
+            return $this->store($request); // вызываем store из контроллера
+        });
+
+    $machineCurrent = $storage->machine ?? [];
+
+    if (count($machineCurrent) > 0) {
+        broadcast(new WireOnMachine($machineCurrent[0]))->toOthers();
     }
+
+    if (count($machinePrev) > 0 && (!isset($machineCurrent[0]) || $machinePrev[0]->id !== $machineCurrent[0]->id)) {
+        broadcast(new WireOnMachine($machinePrev[0]))->toOthers();
+    }
+
+    return to_route('feedingModule.index')
+        ->with('success', 'Провод успешно перемещен в ячейку ' . $data['storage_name']);
+}
 }

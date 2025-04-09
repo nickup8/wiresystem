@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Storage;
+use App\Models\StorageWire;
 use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireDetail;
@@ -108,4 +110,43 @@ class WireServices
         return $wireDetail->id;
 
     }
+
+    public function getOrCreateWireAndAttachToStorage(array $data, Storage $storage, callable $createWireCallback): array
+    {
+        $barcodeArray = $this->transformRequestNametoArray($data['barcode']);
+        $wire = Wire::where('barcode', $barcodeArray['barcode'])->first();
+
+        $machinePrev = [];
+
+        if (!$wire) {
+            // Вызываем переданный колбэк для создания провода
+            $wire = $createWireCallback();
+
+            StorageWire::create([
+                'storage_id' => $storage->id,
+                'wire_id' => $wire->id,
+            ]);
+        } else {
+            $storageWire = StorageWire::where('wire_id', $wire->id)->first();
+
+            if (!$storageWire) {
+                throw new \InvalidArgumentException("Катушка " . $data['barcode'] . " уже пуста");
+            }
+
+            $prevStorage = Storage::find($storageWire->storage_id);
+            $machinePrev = $prevStorage->machine ?? [];
+
+            $storageWire->update([
+                'storage_id' => $storage->id,
+            ]);
+        }
+
+        return [
+            'wire' => $wire,
+            'machinePrev' => $machinePrev,
+        ];
+    }
+
+
+
 }

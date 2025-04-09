@@ -1,8 +1,17 @@
 import Heading from '@/components/heading';
+import echo from '@/echo';
 import { Machine, WireStorage } from '@/types';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-export default function WiresStorageMachine({ machine, wires }: { machine: Machine; wires: WireStorage[] }) {
+export default function WiresStorageMachine({ machine, wires: initialWires }: { machine: Machine; wires: WireStorage[] }) {
+    const [wires, setWires] = useState<WireStorage[]>(initialWires);
+
+    useEffect(() => {
+        echo.private(`wire.${machine.id}`).listen('WireOnMachine', (data: any) => {
+            setWires(data.wires);
+        });
+    }, []);
+
     const machineStorages = useMemo(() => {
         return {
             B: machine.storages.filter((s) => s.name.endsWith('B')),
