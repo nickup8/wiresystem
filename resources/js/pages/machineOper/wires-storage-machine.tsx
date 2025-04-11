@@ -5,6 +5,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 export default function WiresStorageMachine({ machine, wires: initialWires }: { machine: Machine; wires: WireStorage[] }) {
     const [wires, setWires] = useState<WireStorage[]>(initialWires);
+    const [storagesWork, setStoragesWork] = useState<number[]>([]);
+    console.log(storagesWork);
+
+    const wireInWork = (storageId: number) => {
+        if (storagesWork.includes(storageId)) {
+            setStoragesWork(storagesWork.filter((id) => id !== storageId));
+        } else {
+            setStoragesWork([...storagesWork, storageId]);
+        }
+    };
 
     useEffect(() => {
         echo.private(`wire.${machine.id}`).listen('WireOnMachine', (data: any) => {
@@ -36,8 +46,22 @@ export default function WiresStorageMachine({ machine, wires: initialWires }: { 
                                     .join('; ') || '';
 
                             return (
-                                <div key={storage.id} className="-ml-[1px] flex flex-col items-center border py-2">
-                                    <div className="mb-2 w-32 border-b px-4 pb-2 text-center">{storage.name}</div>
+                                <div
+                                    key={storage.id}
+                                    className={
+                                        '-ml-[1px] flex flex-col items-center border border-gray-300 ' +
+                                        (!storagesWork.includes(storage.id) ? '' : '')
+                                    }
+                                >
+                                    <div
+                                        className={
+                                            'w-32 cursor-pointer border-b px-4 pt-2 pb-2 text-center ' +
+                                            (storagesWork.includes(storage.id) ? 'bg-green-200' : '')
+                                        }
+                                        onClick={(prev) => wireInWork(storage.id)}
+                                    >
+                                        {storage.name}
+                                    </div>
                                     <div className="font-bold">{wireMaterials}</div>
                                     <div className="mt-1 text-xs text-gray-500">{wireDetails}</div>
                                 </div>

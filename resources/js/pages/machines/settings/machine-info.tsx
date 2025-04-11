@@ -22,7 +22,6 @@ export default function MachineInfo({ machine, zones, error, success }: { machin
             z.number({ message: 'Номер зоны должен быть числом' }).gt(0, { message: 'Номер зоны должен быть больше 0' }).nullable(),
         ),
     });
-    console.log(error);
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {

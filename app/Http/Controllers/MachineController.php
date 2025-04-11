@@ -115,22 +115,40 @@ class MachineController extends Controller
     }
 
     public function storagesStore(MachineStorageRequest $request, Machine $machine)
-{
+    {
 
-    $data = $request->validated();
-    $storage = Storage::where('name', $data['storage_name'])->first();
-    $storageZoneId = $storage->zone->id;
-    $machineZoneId = $machine->zone->id;
-    $storageId = $storage->id;
+        $data = $request->validated();
+        $storage = Storage::where('name', $data['storage_name'])->first();
+        $storageZoneId = $storage->zone->id;
+        $machineZoneId = $machine->zone->id;
+        $storageId = $storage->id;
 
 
-    if($storageZoneId === $machineZoneId) {
-        $machine->storages()->syncWithoutDetaching($storageId);
-        return back()->with('success', 'Ячейка ' . $data['storage_name'] . ' привязана для ' . $machine->name);
-    } else {
-        return back()->with('error', 'Ячека ' . $data['storage_name'] . ' не пренадлежит зоне оборудования');
+        if($storageZoneId === $machineZoneId) {
+            $machine->storages()->syncWithoutDetaching($storageId);
+            return back()->with('success', 'Ячейка ' . $data['storage_name'] . ' привязана для ' . $machine->name);
+        } else {
+            return back()->with('error', 'Ячека ' . $data['storage_name'] . ' не пренадлежит зоне оборудования');
+        }
     }
-}
+    public function type(Machine $machine)
+    {
+        return inertia('machines/settings/machine-type', [
+            'machine' => new MachineResource($machine)
+        ]);
+    }
+
+    public function updateType(Request $request, Machine $machine)
+
+    {
+
+        $data = $request->validate([
+            'type' => 'required'
+        ]);
+        $machine->update(['type' => $data['type']]);
+
+        return to_route('machines.type', $machine)->with('success', 'Тип оборудования успешно обновлен');
+    }
 
 
 }

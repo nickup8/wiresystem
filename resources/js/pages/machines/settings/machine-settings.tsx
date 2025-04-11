@@ -29,6 +29,11 @@ export default function MachineSettings({ children, machine }: { children: React
             url: `/machines/${machine.id}/edit/storages`,
             icon: null,
         },
+        {
+            title: 'Тип оборудования',
+            url: `/machines/${machine.id}/edit/type`,
+            icon: null,
+        },
     ];
 
     const currentPath = window.location.pathname;

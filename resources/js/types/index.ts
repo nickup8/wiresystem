@@ -103,6 +103,7 @@ export interface Machine {
     id: number;
     name: string;
     zone: Zone;
+    type: number;
     storages: Storage[];
 }
 

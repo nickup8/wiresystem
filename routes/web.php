@@ -41,6 +41,8 @@ Route::middleware(['auth', sprintf('role:%s|%s',
     Route::put('/machines/{machine}', [MachineController::class, 'update'])->name('machines.update');
     Route::get('/machines/{machine}/edit/storages', [MachineController::class, 'storages'])->name('machines.storages');
     Route::post('/machines/{machine}/storages', [MachineController::class, 'storagesStore'])->name('machines.storages.store');
+    Route::get('/machines/{machine}/edit/type', [MachineController::class, 'type'])->name('machines.type');
+    Route::put('/machines/{machine}/type', [MachineController::class, 'updateType'])->name('machines.updateType');
 
     Route::get('/feeding', [FeedingController::class, 'index'])->name('feeding.index');
     Route::get('/wire-types', [WireTypeController::class, 'index'])->name('wireTypes.index');

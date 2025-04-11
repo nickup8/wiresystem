@@ -9,6 +9,7 @@ class Machine extends Model
 {
     protected $fillable = [
         'name',
+        'type'
     ];
 
     public function zone()

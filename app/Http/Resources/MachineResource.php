@@ -21,6 +21,7 @@ class MachineResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'zone' => $this->zone,
+            'type' => $this->type,
             'storages' => StorageResourse::collection($this->storages),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
